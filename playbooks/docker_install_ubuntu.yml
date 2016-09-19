@@ -1,0 +1,40 @@
+---
+- name: Install Docker on Ubuntu (!!! ensure you run a suitable kernel !!!)
+  hosts: all
+  gather_facts: no
+  remote_user: ubuntu
+
+  pre_tasks:
+    - name: 'Install python2'
+      raw: sudo apt-get -y install python-simplejson
+
+  tasks:
+    - name: Upgrade list
+      copy: content="deb https://apt.dockerproject.org/repo ubuntu-xenial main" dest=/etc/apt/sources.list.d/docker.list
+      become: yes
+      become_user: root
+      become_method: sudo
+
+    - name: apt-get update
+      apt: update_cache=yes
+      become: yes
+
+    - name: Install dependencies
+      apt: name={{ item }} state=installed
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+      become: yes
+
+    - name: Install repo key
+      command: apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+      become: yes
+
+    - name: Install Docker
+      apt: name={{ item }} state=installed
+      with_items:
+        - docker-engine
+
+    - name: Launch Docker
+      service: name=docker state=started
+      become: yes

@@ -1,0 +1,27 @@
+---
+- name: Install last edge Docker
+  hosts: all
+  gather_facts: no
+  remote_user: ubuntu
+  pre_tasks:
+    - name: 'install python2'
+      raw: sudo apt-get -y install python-simplejson
+
+  tasks:
+    - name: Download latest edge Docker binaries
+      script: install-docker-1.13.sh
+      become: yes
+      become_user: root
+      become_method: sudo
+
+    - name: Cleanup docker.pid
+      file: path=/var/lib/docker.pid state=absent
+      become: yes
+      become_user: root
+      become_method: sudo
+
+    - name: Start dockerd
+      command: "/usr/bin/dockerd"
+      become: yes
+      become_user: root
+      become_method: sudo
