@@ -14,12 +14,9 @@
         cert_dir: "/etc/docker/server.pem"
         cacert_path: "/etc/docker/ca.pem"
         caprivate_path: "/etc/docker/server-key.pem"
-        client_certpath: ""
-        client_keypath: ""
-        register: cert_install_result
+        client_certpath: "/etc/docker/client-cert.pem"
+        client_keypath: "/etc/docker/client-key.pem"
       become: yes
-      become_user: root
-      become_method: sudo
       register: result
 
     - debug: msg="{{ result.Msg }}"
