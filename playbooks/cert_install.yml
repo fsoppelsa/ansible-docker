@@ -1,0 +1,25 @@
+---
+- name: Install Docker certs
+  hosts: all
+  gather_facts: no
+  remote_user: ubuntu
+
+  pre_tasks:
+    - name: 'Install python2'
+      raw: sudo apt-get -y install python-simplejson
+
+  tasks:
+    - name: Install Docker certificates
+      docker_cert_install:
+        cert_dir: "/etc/docker/server.pem"
+        cacert_path: "/etc/docker/ca.pem"
+        caprivate_path: "/etc/docker/server-key.pem"
+        client_certpath: ""
+        client_keypath: ""
+        register: cert_install_result
+      become: yes
+      become_user: root
+      become_method: sudo
+      register: result
+
+    - debug: msg="{{ result.Msg }}"
