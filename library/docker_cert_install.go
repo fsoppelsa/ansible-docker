@@ -58,23 +58,21 @@ import (
 */
 
 type ModuleArgs struct {
-	CertDir        string
-	CacertPath     string
-	CaprivatePath  string
-	ClientCertpath string
-	ClientKeypath  string
+	Cert_dir        string
+	Cacert_path     string
+	Caprivate_path  string
+	Client_certpath string
+	Client_keypath  string
 }
-
-// Use BootstrapCertificates
 
 func createCertificates(options *ModuleArgs) error {
 	var authOptions auth.Options
 
-	authOptions.CertDir = options.CertDir
-	authOptions.CaCertPath = options.CacertPath
-	authOptions.CaPrivateKeyPath = options.CaprivatePath
-	authOptions.ClientCertPath = options.ClientCertpath
-	authOptions.ClientKeyPath = options.ClientKeypath
+	authOptions.CertDir = options.Cert_dir
+	authOptions.CaCertPath = options.Cacert_path
+	authOptions.CaPrivateKeyPath = options.Caprivate_path
+	authOptions.ClientCertPath = options.Client_certpath
+	authOptions.ClientKeyPath = options.Client_keypath
 
 	if err := cert.BootstrapCertificates(&authOptions); err != nil {
 		return err
@@ -100,7 +98,7 @@ func main() {
 		ansible.ExitJson(response)
 	} else {
 		response.Msg = "Certs generation ERROR"
-		ansible.FailJson(response)
+		ansible.ExitJson(response)
 	}
 
 }
