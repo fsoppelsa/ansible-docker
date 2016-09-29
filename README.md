@@ -1,12 +1,16 @@
 # ansible-docker
 Plays for managing Docker and Docker infrastructures.
 
-In **playbooks/**:
-* docker\_install\_ubuntu.yml: Installs the last stable (tried on Ubuntu 16.04)
-* docker\_install\_113.yml: Installs the latest edge version from binaries (untested yet)
+Requirements:
+* Ansible 2.2+
+* Golang 1.7.1
 
-In library/:
-* docker\_cert\_install.go: Module for creating certificates. Imports from libmachine
+In **playbooks/**:
+* `docker\_install\_ubuntu.yml`: Installs the last stable (tried on Ubuntu 16.04)
+* `docker\_install\_113.yml`: Installs the latest edge version from binaries (untested yet)
+
+In **library/**:
+* `docker\_cert\_install.go`: Module for creating certificates. Imports from libmachine
 
 Cross-compile to the target arch:
 
