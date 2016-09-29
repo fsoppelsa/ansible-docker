@@ -6,11 +6,11 @@ Requirements:
 * Golang 1.7.1
 
 In **playbooks/**:
-* `docker\_install\_ubuntu.yml`: Installs the last stable (tried on Ubuntu 16.04)
-* `docker\_install\_113.yml`: Installs the latest edge version from binaries (untested yet)
+* `docker_install_ubuntu.yml`: Installs the last stable (tried on Ubuntu 16.04)
+* `docker_install_113.yml`: Installs the latest edge version from binaries (untested yet)
 
 In **library/**:
-* `docker\_cert\_install.go`: Module for creating certificates. Imports from libmachine
+* `docker_cert_install.go`: Module for creating certificates. Imports from libmachine
 
 Cross-compile to the target arch:
 
