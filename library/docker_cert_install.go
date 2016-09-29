@@ -29,8 +29,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================
 
-Ansible docker_install module
+Ansible docker_cert_install module
 Requires Ansible 2.2+
+
+GOOS=linux GOARCH=amd64 \
+	go build -o library/docker_cert_install library/docker_cert_install.go
 */
 
 package main
@@ -46,23 +49,21 @@ import (
 /*
   Sample:
 
-    - name: Install Docker certificates
+    - name: Generate certificates
       docker_cert_install:
-		cert_dir: ""
-		cacert_path: ""
-		caprivate_path: ""
-		client_certpath: ""
-		client_keypath: ""
-      register: cert_install_result
-
+        cert_dir: "/etc/docker/"
+        cacert_path: "/etc/docker/ca.pem"
+        caprivate_path: "/etc/docker/ca-key.pem"
+        servercert_path: "/etc/docker/server.pem"
+        servercertkey_path: "/etc/docker/server-key.pem"
 */
 
 type ModuleArgs struct {
-	Cert_dir        string
-	Cacert_path     string
-	Caprivate_path  string
-	Client_certpath string
-	Client_keypath  string
+	Cert_dir           string
+	Cacert_path        string
+	Caprivate_path     string
+	Servercert_path    string
+	Servercertkey_path string
 }
 
 func createCertificates(options *ModuleArgs) error {
@@ -71,14 +72,31 @@ func createCertificates(options *ModuleArgs) error {
 	authOptions.CertDir = options.Cert_dir
 	authOptions.CaCertPath = options.Cacert_path
 	authOptions.CaPrivateKeyPath = options.Caprivate_path
-	authOptions.ClientCertPath = options.Client_certpath
-	authOptions.ClientKeyPath = options.Client_keypath
+	authOptions.ServerCertPath = options.Servercert_path
+	authOptions.ServerKeyPath = options.Servercertkey_path
 
-	if err := cert.BootstrapCertificates(&authOptions); err != nil {
+	err := cert.GenerateCACertificate(
+		authOptions.CaCertPath,
+		authOptions.CaPrivateKeyPath,
+		"org",
+		2048)
+
+	if err != nil {
 		return err
-	} else {
-		return nil
 	}
+
+	err = cert.GenerateCert(&cert.Options{
+		Hosts:       []string{"127.0.0.1"},
+		CertFile:    authOptions.ServerCertPath,
+		KeyFile:     authOptions.ServerKeyPath,
+		CAFile:      authOptions.CaCertPath,
+		CAKeyFile:   authOptions.CaPrivateKeyPath,
+		Org:         "org",
+		Bits:        2048,
+		SwarmMaster: false,
+	})
+
+	return err
 }
 
 func main() {
@@ -92,7 +110,7 @@ func main() {
 		ansible.FailJson(response)
 	}
 
-	// Attempt to generate certs
+	// Create certs
 	if err := createCertificates(&moduleArgs); err != nil {
 		response.Msg = "Certs generated ok"
 		ansible.ExitJson(response)

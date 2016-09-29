@@ -3,6 +3,7 @@
   hosts: all
   gather_facts: no
   remote_user: ubuntu
+  become: yes
 
   pre_tasks:
     - name: 'Install python2'
@@ -16,7 +17,5 @@
         caprivate_path: "/etc/docker/server-key.pem"
         client_certpath: "/etc/docker/client-cert.pem"
         client_keypath: "/etc/docker/client-key.pem"
-      become: yes
       register: result
 
-    - debug: msg="{{ result.Msg }}"
