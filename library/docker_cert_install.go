@@ -68,6 +68,7 @@ type ModuleArgs struct {
 
 func createCertificates(options *ModuleArgs) error {
 	var authOptions auth.Options
+	var bits = 2048
 
 	authOptions.CertDir = options.Cert_dir
 	authOptions.CaCertPath = options.Cacert_path
@@ -79,7 +80,7 @@ func createCertificates(options *ModuleArgs) error {
 		authOptions.CaCertPath,
 		authOptions.CaPrivateKeyPath,
 		"org",
-		2048)
+		bits)
 
 	if err != nil {
 		return err
@@ -92,7 +93,7 @@ func createCertificates(options *ModuleArgs) error {
 		CAFile:      authOptions.CaCertPath,
 		CAKeyFile:   authOptions.CaPrivateKeyPath,
 		Org:         "org",
-		Bits:        2048,
+		Bits:        bits,
 		SwarmMaster: false,
 	})
 
