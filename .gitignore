@@ -2,3 +2,4 @@ library/docker_cert_install
 library/tmp*
 inventory
 *.retry
+certs/

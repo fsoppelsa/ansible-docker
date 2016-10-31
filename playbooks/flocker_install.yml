@@ -1,0 +1,17 @@
+---
+- name: Install Flocker utils
+  hosts: all
+  gather_facts: no
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  become_method: sudo
+
+  pre_tasks:
+    - name: Install python2
+      raw: sudo apt-get -y install python-simplejson
+
+  tasks:
+    - name: Execute script
+      script: flocker-install-utils.sh
+
